@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products | Online Shop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header class="site-header">
+        <a class="brand" th:href="@{/products}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                <path d="M5 7h14l1 14H4L5 7Z"/>
+                <path d="M8 8V6a4 4 0 0 1 8 0v2"/>
+            </svg>
+            Online Shop
+        </a>
+        <form th:action="@{/logout}" method="post">
+            <button class="button button-outline" type="submit">Sign out</button>
+        </form>
+    </header>
+    <main class="products-page">
+        <span class="eyebrow">YOUR SHOP</span>
+        <h1>Products</h1>
+        <p>Welcome, <span th:text="${session.loggedInUser}">admin</span>. You are signed in.</p>
+        <section class="empty-state" aria-labelledby="products-heading">
+            <div class="empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="m12 3 9 5v9l-9 5-9-5V8l9-5Z"/>
+                    <path d="m3 8 9 5 9-5M12 13v9M7.5 5.5l9 5V15"/>
+                </svg>
+            </div>
+            <h2 id="products-heading">Your product space is ready</h2>
+            <p>Product management will be added in the next lesson.</p>
+        </section>
+    </main>
+</body>
+</html>

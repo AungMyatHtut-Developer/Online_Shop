@@ -1,0 +1,133 @@
+:root {
+    color-scheme: light;
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #142b50;
+    background: #f3f7fd;
+    font-synthesis: none;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+button, input { font: inherit; }
+button, a, input { -webkit-tap-highlight-color: transparent; }
+a { color: inherit; }
+h1, h2, p { margin-top: 0; }
+p { color: #60718a; line-height: 1.65; }
+
+.login-page {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding: 32px;
+}
+
+.login-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    width: min(100%, 960px);
+    min-height: 570px;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 70px #163c7714;
+    border: 1px solid #e2eaf6;
+}
+
+.brand-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 42px;
+    background: linear-gradient(145deg, #185cda, #123e9c);
+    color: #fff;
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 21px;
+    font-weight: 700;
+    text-decoration: none;
+    color: #1857bd;
+}
+
+.brand svg { width: 28px; height: 28px; flex-shrink: 0; }
+.brand-light { color: #fff; }
+.eyebrow { display: block; color: #245ac2; font-size: 11px; font-weight: 700; letter-spacing: 1.8px; }
+.brand-message { margin: 64px 0; }
+.brand-message .eyebrow { color: #c7dcff; }
+.brand-message h2 { margin: 18px 0; font-size: 46px; font-weight: 650; line-height: 1.16; letter-spacing: -1.5px; }
+.brand-message p { max-width: 250px; margin-bottom: 0; color: #dbe8ff; font-size: 16px; }
+.brand-caption { color: #ccdeff; font-size: 12px; }
+
+.form-panel { display: flex; flex-direction: column; justify-content: center; padding: 52px; }
+.form-heading h1 { margin: 12px 0; font-size: 32px; letter-spacing: -0.9px; }
+.form-heading p { margin-bottom: 30px; font-size: 14px; }
+.login-form { display: grid; gap: 22px; }
+.form-field { display: grid; gap: 9px; }
+.form-field label { font-size: 13px; font-weight: 600; }
+.form-field input {
+    width: 100%;
+    min-height: 48px;
+    border: 1px solid #cdd9e9;
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: #142b50;
+    background: #fff;
+    font-size: 14px;
+}
+.form-field input::placeholder { color: #75849a; }
+.form-field input:focus { border-color: #2162db; outline: 3px solid #2162db24; }
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    min-height: 46px;
+    padding: 12px 20px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 150ms ease;
+}
+.button-primary { width: 100%; margin-top: 4px; background: #1d5ed6; color: #fff; }
+.button-primary:hover { background: #164cae; }
+.button-primary span { font-size: 20px; line-height: 1; }
+.button-outline { color: #1d5ed6; border-color: #cddcf5; background: #fff; }
+.button-outline:hover { background: #eef4ff; }
+button:focus-visible, a:focus-visible { outline: 3px solid #79a9ff; outline-offset: 4px; }
+.login-note { margin: 28px 0 0; text-align: center; font-size: 12px; }
+.error-message { padding: 12px 14px; border: 1px solid #efc1c1; border-radius: 8px; background: #fff3f3; color: #a12424; font-size: 13px; line-height: 1.5; }
+
+.site-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 22px max(24px, calc((100% - 1080px) / 2)); background: #fff; border-bottom: 1px solid #e0e9f6; }
+.products-page { width: min(100% - 48px, 1080px); margin: 56px auto; }
+.products-page h1 { margin: 12px 0 8px; font-size: 36px; letter-spacing: -1px; }
+.empty-state { margin-top: 34px; padding: 64px 24px; border: 1px solid #e0e9f6; border-radius: 14px; background: #fff; text-align: center; }
+.empty-icon { display: grid; place-items: center; width: 68px; height: 68px; margin: 0 auto 22px; border-radius: 18px; background: #edf4ff; color: #245ac2; }
+.empty-icon svg { width: 32px; height: 32px; }
+.empty-state h2 { margin-bottom: 10px; font-size: 22px; }
+.empty-state p { margin-bottom: 0; font-size: 14px; }
+
+@media (max-width: 700px) {
+    .login-page { padding: 20px; }
+    .login-layout { grid-template-columns: 1fr; min-height: auto; }
+    .brand-panel { padding: 28px; }
+    .brand-message { margin: 30px 0 0; }
+    .brand-message h2 { margin: 12px 0; font-size: 34px; }
+    .brand-message p { max-width: none; font-size: 14px; }
+    .brand-caption { display: none; }
+    .form-panel { padding: 32px 28px; }
+    .form-heading h1 { font-size: 28px; }
+    .site-header { padding: 18px 20px; }
+    .site-header .brand { font-size: 18px; gap: 8px; }
+    .products-page { margin-top: 36px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .button { transition: none; }
+}

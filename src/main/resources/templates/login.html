@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in | Online Shop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="login-page">
+    <main class="login-layout">
+        <section class="brand-panel" aria-label="Online Shop">
+            <a class="brand brand-light" th:href="@{/}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                    <path d="M5 7h14l1 14H4L5 7Z"/>
+                    <path d="M8 8V6a4 4 0 0 1 8 0v2"/>
+                </svg>
+                Online Shop
+            </a>
+            <div class="brand-message">
+                <span class="eyebrow">WELCOME TO YOUR SHOP</span>
+                <h2>Your products.<br>One place.</h2>
+                <p>A simple beginning for your online shop.</p>
+            </div>
+            <span class="brand-caption">A little shop. A world of possibility.</span>
+        </section>
+
+        <section class="form-panel" aria-labelledby="login-heading">
+            <div class="form-heading">
+                <span class="eyebrow">ADMIN SIGN IN</span>
+                <h1 id="login-heading">Welcome back</h1>
+                <p>Enter your details to access your shop.</p>
+            </div>
+
+            <form th:action="@{/login}" method="post" class="login-form">
+                <div class="error-message" th:if="${error}" th:text="${error}" role="alert"></div>
+
+                <div class="form-field">
+                    <label for="username">Username</label>
+                    <input id="username" name="username" type="text" placeholder="Enter your username"
+                           th:value="${username}" autocomplete="username" autocapitalize="none"
+                           spellcheck="false" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="password">Password</label>
+                    <input id="password" name="password" type="password" placeholder="Enter your password"
+                           autocomplete="current-password" required>
+                </div>
+
+                <button type="submit" class="button button-primary">Sign in <span aria-hidden="true">&rarr;</span></button>
+            </form>
+            <p class="login-note">Online Shop &middot; Administrator access</p>
+        </section>
+    </main>
+</body>
+</html>
