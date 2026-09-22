@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products | Online Shop</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css(v='20260922-4')}">
+    <script th:src="@{/js/products.js(v='20260922-4')}" defer></script>
 </head>
 <body>
     <header class="site-header">
@@ -20,19 +21,88 @@
         </form>
     </header>
     <main class="products-page">
-        <span class="eyebrow">YOUR SHOP</span>
-        <h1>Products</h1>
-        <p>Welcome, <span th:text="${session.loggedInUser}">admin</span>. You are signed in.</p>
-        <section class="empty-state" aria-labelledby="products-heading">
+        <div class="page-heading">
+            <div>
+                <span class="eyebrow">YOUR SHOP</span>
+                <h1>Products</h1>
+                <p>Manage your products, prices and stock in one place.</p>
+            </div>
+            <a class="button button-primary" th:href="@{/products/new}"><span aria-hidden="true">+</span> New product</a>
+        </div>
+        <div class="success-message" th:if="${success}" role="status">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="m8 12 3 3 5-6"/>
+            </svg>
+            <span th:text="${success}">Product created successfully.</span>
+        </div>
+        <section class="product-list" th:unless="${#lists.isEmpty(products)}" aria-label="Product list">
+            <div class="list-heading">
+                <h2>All products</h2>
+                <span class="product-count" th:text="${#lists.size(products)} + ' total'">0 total</span>
+            </div>
+            <div class="table-scroll" tabindex="0" role="region" aria-label="Products table">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Product</th>
+                            <th scope="col" class="number-cell">Price</th>
+                            <th scope="col" class="number-cell">Quantity</th>
+                            <th scope="col">Last updated</th>
+                            <th scope="col" class="actions-heading">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="product : ${products}">
+                            <td class="product-name" th:text="${product.productName}">Product name</td>
+                            <td class="number-cell" th:text="${#numbers.formatDecimal(product.price, 1, 'COMMA', 2, 'POINT')}">0.00</td>
+                            <td class="number-cell" th:text="${product.quantity}">0</td>
+                            <td class="date-cell" th:text="${product.updatedDate != null ? #temporals.format(product.updatedDate, 'dd MMM yyyy, HH:mm') : '-'}">-</td>
+                            <td>
+                                <div class="row-actions">
+                                    <a class="button button-outline button-small" th:href="@{/products/{id}/edit(id=${product.id})}"
+                                       th:aria-label="'Edit ' + ${product.productName}">Edit</a>
+                                    <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post">
+                                        <input type="hidden" name="productToken" th:value="${productToken}">
+                                        <button class="button button-danger button-small" type="button" data-delete-product
+                                                th:attr="data-product-name=${product.productName}"
+                                                aria-haspopup="dialog" aria-controls="delete-product-dialog"
+                                                th:aria-label="'Delete ' + ${product.productName}">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <section class="empty-state" th:if="${#lists.isEmpty(products)}" aria-labelledby="products-heading">
             <div class="empty-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <path d="m12 3 9 5v9l-9 5-9-5V8l9-5Z"/>
                     <path d="m3 8 9 5 9-5M12 13v9M7.5 5.5l9 5V15"/>
                 </svg>
             </div>
-            <h2 id="products-heading">Your product space is ready</h2>
-            <p>Product management will be added in the next lesson.</p>
+            <h2 id="products-heading">No products yet</h2>
+            <p>Add your first product to start building your shop.</p>
         </section>
+        <noscript>
+            <p class="error-message">Enable JavaScript to use product deletion confirmation.</p>
+        </noscript>
     </main>
+    <dialog id="delete-product-dialog" class="confirm-dialog" aria-labelledby="delete-product-title"
+            aria-describedby="delete-product-description">
+        <div class="confirm-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                <path d="M3 6h18M9 6V4h6v2M5 6l1 14h12l1-14M10 10v6M14 10v6"/>
+            </svg>
+        </div>
+        <h2 id="delete-product-title">Delete product?</h2>
+        <p id="delete-product-description"><strong id="delete-product-name"></strong> will be removed from your product list.</p>
+        <div class="confirm-actions">
+            <button id="cancel-product-delete" class="button button-outline" type="button" autofocus>Cancel</button>
+            <button id="confirm-product-delete" class="button button-danger-solid" type="button">Delete product</button>
+        </div>
+    </dialog>
 </body>
 </html>

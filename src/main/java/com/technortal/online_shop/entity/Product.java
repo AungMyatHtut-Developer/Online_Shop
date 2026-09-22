@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Getter
@@ -34,10 +35,14 @@ public class Product {
     @Column(nullable = false)
     private Integer quantity = 0;
 
-    // Binary image data for the product_image BLOB column.
+    // MEDIUMBLOB supports the 2 MB image upload limit.
     @Lob
-    @Column(name = "product_image", columnDefinition = "BLOB")
+    @Column(name = "product_image", length = 2_097_152, columnDefinition = "MEDIUMBLOB")
     private byte[] productImage;
+
+    @ColumnDefault("false")
+    @Column(name = "is_delete", nullable = false)
+    private boolean isDelete = false;
 
     @CreationTimestamp
     @Column(name = "created_date", nullable = false, updatable = false)

@@ -1,0 +1,30 @@
+I want to add CRUD features on product page.
+the first page after login must be list of the products.
+In this listing page I want "new product" button right corner.
+In Product list I want to show "Edit" and "Delete" buttons.
+"Delete" feature must be soft delete so you have to add isDelete status column in database table(you can edit only in the entity).
+You have to follow up on my current project structure and design theme.
+
+## Fix the UI
+In this page "New Product" button is showing center. I want you to move it right alignment.
+In this image I'm highlighted two places, you have to fix the deign to uniform in all pages.
+The project can be created but The table design is not good and fix the design. I don't want to show the image of the project in listing. I only want to show the image when I click on the edit button.
+And "Product created successfully" status must show in green color with highlight box.
+
+#Fix the UI
+In project update page remove "Remove Current Image" check box and move choose file section next to the picture.
+
+#Fix the alert box
+when I delete the product, the alert box showed and this is good design. But I don't like browser native alert box.
+So you have to create own confirm box.
+
+#Update image size limitation
+Image size limitation is very low. So set to 2MB max.
+
+#Update the code design
+Update the code design from controller layer. You have to move business logics into service layer(service package),
+Dto and Dao must be use to separate respective code designs. The controller code must be clean and it only perform accepting the request,
+filtering the request and responding the right answers to the destination.
+
+
+
