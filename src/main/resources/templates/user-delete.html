@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete user | Online Shop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css(v='20260922-4')}">
+    <link rel="stylesheet" th:href="@{/css/portal.css(v='20260923-2')}">
+</head>
+<body class="portal-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <aside th:replace="~{fragments/portal :: sidebar('users')}"></aside>
+    <div class="portal-workspace">
+        <header th:replace="~{fragments/portal :: topbar('Users')}"></header>
+        <main id="main-content" class="portal-content product-editor" tabindex="-1">
+            <div class="page-heading"><h1>Delete user?</h1></div>
+            <form class="product-form" th:action="@{/users/{id}/delete(id=${user.id})}" method="post">
+                <input type="hidden" name="portalToken" th:value="${session.portalToken}">
+                <p><strong th:text="${user.username}"></strong> will permanently lose their account and portal access. This cannot be undone.</p>
+                <div class="form-actions"><a class="button button-outline" th:href="@{/users}">Cancel</a><button class="button button-danger-solid" type="submit" th:disabled="${user.admin}">Delete user</button></div>
+            </form>
+        </main>
+    </div>
+</body>
+</html>

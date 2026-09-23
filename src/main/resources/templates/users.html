@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users | Online Shop Business Portal</title>
+    <link rel="stylesheet" th:href="@{/css/style.css(v='20260922-4')}">
+    <link rel="stylesheet" th:href="@{/css/portal.css(v='20260923-2')}">
+    <script th:src="@{/js/users.js(v='20260923-1')}" defer></script>
+</head>
+<body class="portal-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <aside th:replace="~{fragments/portal :: sidebar('users')}"></aside>
+    <div class="portal-workspace">
+        <header th:replace="~{fragments/portal :: topbar('Users')}"></header>
+        <main id="main-content" class="portal-content" tabindex="-1">
+            <div class="page-heading">
+                <div>
+                    <span class="eyebrow">ACCOUNT MANAGEMENT</span>
+                    <h1>Users</h1>
+                    <p>Manage user details and access to your portal.</p>
+                </div>
+                <a class="button button-primary" th:href="@{/users/new}"><span aria-hidden="true">+</span> New user</a>
+            </div>
+            <div class="success-message" th:if="${success}" th:text="${success}" role="status"></div>
+            <div class="error-message account-alert" th:if="${error}" th:text="${error}" role="alert"></div>
+            <section class="product-list" aria-labelledby="users-heading">
+                <div class="list-heading">
+                    <div><h2 id="users-heading">All users</h2><p>New users must change their temporary password before entering the portal.</p></div>
+                    <span class="product-count" th:text="${#lists.size(users)} + ' total'">0 total</span>
+                </div>
+                <div class="table-scroll" tabindex="0" role="region" aria-label="Users table">
+                    <table class="products-table users-table">
+                        <thead><tr><th scope="col">Username</th><th scope="col">Email</th><th scope="col">Access</th><th scope="col">Password</th><th scope="col">Last updated</th><th scope="col" class="actions-heading">Actions</th></tr></thead>
+                        <tbody>
+                            <tr th:each="user : ${users}">
+                                <td><strong th:text="${user.username}">username</strong><small class="cell-detail" th:text="${user.admin} ? 'Administrator' : 'User'">User</small></td>
+                                <td class="email-cell" th:text="${user.email}">email</td>
+                                <td><span class="account-badge" th:classappend="${user.locked} ? 'badge-locked' : 'badge-active'" th:text="${user.locked} ? 'Locked' : 'Active'">Active</span></td>
+                                <td><span class="account-badge" th:classappend="${user.verified} ? 'badge-active' : 'badge-pending'" th:text="${user.verified} ? 'Password set' : 'Change required'">Change required</span></td>
+                                <td class="date-cell" th:text="${#temporals.format(user.updatedDate, 'dd MMM yyyy, HH:mm')}">-</td>
+                                <td>
+                                    <div class="row-actions">
+                                        <a class="button button-outline button-small" th:href="@{/users/{id}/edit(id=${user.id})}" th:aria-label="'Edit ' + ${user.username}">Edit</a>
+                                        <form th:unless="${user.admin}" th:action="@{/users/{id}/lock(id=${user.id})}" method="post">
+                                            <input type="hidden" name="portalToken" th:value="${session.portalToken}">
+                                            <input type="hidden" name="locked" th:value="${!user.locked}">
+                                            <button class="button button-outline button-small" type="submit" th:text="${user.locked} ? 'Unlock' : 'Lock'"
+                                                    th:aria-label="${user.locked ? 'Unlock ' : 'Lock '} + ${user.username}">Lock</button>
+                                        </form>
+                                        <a th:unless="${user.admin}" class="button button-danger button-small" th:href="@{/users/{id}/delete(id=${user.id})}"
+                                           data-delete-user th:attr="data-username=${user.username}" th:aria-label="'Delete ' + ${user.username}"
+                                           aria-haspopup="dialog" aria-controls="delete-user-dialog">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <p class="account-note">The admin account can be edited, but cannot be locked or deleted.</p>
+        </main>
+    </div>
+    <dialog id="delete-user-dialog" class="confirm-dialog" aria-labelledby="delete-user-title" aria-describedby="delete-user-description">
+        <h2 id="delete-user-title">Delete user?</h2>
+        <p id="delete-user-description"><strong id="delete-user-name"></strong> will permanently lose their account and portal access. This cannot be undone.</p>
+        <form id="delete-user-form" method="post">
+            <input type="hidden" name="portalToken" th:value="${session.portalToken}">
+            <div class="confirm-actions">
+                <button id="cancel-user-delete" class="button button-outline" type="button" autofocus>Cancel</button>
+                <button class="button button-danger-solid" type="submit">Delete user</button>
+            </div>
+        </form>
+    </dialog>
+</body>
+</html>

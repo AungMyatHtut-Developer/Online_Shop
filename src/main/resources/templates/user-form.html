@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${userId == null ? 'New user | Online Shop' : 'Edit user | Online Shop'}">User | Online Shop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css(v='20260922-4')}">
+    <link rel="stylesheet" th:href="@{/css/portal.css(v='20260923-2')}">
+</head>
+<body class="portal-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <aside th:replace="~{fragments/portal :: sidebar('users')}"></aside>
+    <div class="portal-workspace">
+        <header th:replace="~{fragments/portal :: topbar('Users')}"></header>
+        <main id="main-content" class="portal-content product-editor" tabindex="-1">
+            <a class="button button-outline back-link" th:href="@{/users}">&larr; Back to users</a>
+            <div class="page-heading"><div>
+                <span class="eyebrow">ACCOUNT MANAGEMENT</span>
+                <h1 th:text="${userId == null ? 'New user' : 'Edit user'}">New user</h1>
+                <p th:text="${userId == null ? 'Create an account with a temporary password.' : 'Update the account details.'}">Account details</p>
+            </div></div>
+            <form class="product-form" th:object="${user}" method="post" th:action="${userId == null} ? @{/users} : @{/users/{id}/edit(id=${userId})}">
+                <input type="hidden" name="portalToken" th:value="${session.portalToken}">
+                <div class="error-message" th:if="${#fields.hasAnyErrors()}" role="alert">
+                    <p>Please check the account details and try again.</p>
+                    <p th:each="error : ${#fields.globalErrors()}" th:text="${error}"></p>
+                </div>
+                <div class="form-field">
+                    <label for="username">Username</label>
+                    <input id="username" type="text" th:field="*{username}" minlength="3" maxlength="50" pattern="[A-Za-z0-9._\-]{3,50}"
+                           autocomplete="off" autocapitalize="none" spellcheck="false" required th:readonly="${adminAccount}"
+                           th:errorclass="input-error" th:attr="aria-invalid=${#fields.hasErrors('username')}" aria-describedby="username-help username-error">
+                    <span id="username-help" class="field-help">3 to 50 letters, numbers, dots, underscores or hyphens. Usernames are stored in lowercase.</span>
+                    <span id="username-error" class="field-error" th:errors="*{username}"></span>
+                </div>
+                <div class="form-field">
+                    <label for="email">Email</label>
+                    <input id="email" type="email" th:field="*{email}" maxlength="254" autocomplete="off" required
+                           th:errorclass="input-error" th:attr="aria-invalid=${#fields.hasErrors('email')}" aria-describedby="email-error">
+                    <span id="email-error" class="field-error" th:errors="*{email}"></span>
+                </div>
+                <div class="account-info" th:if="${userId == null}">A random temporary password will be shown after creation. Share it with the user so they can sign in and choose their own password.</div>
+                <div class="form-actions">
+                    <a class="button button-outline" th:href="@{/users}">Cancel</a>
+                    <button class="button button-primary" type="submit" th:text="${userId == null ? 'Create user' : 'Save changes'}">Create user</button>
+                </div>
+            </form>
+        </main>
+    </div>
+</body>
+</html>

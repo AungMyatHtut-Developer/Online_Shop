@@ -2,6 +2,8 @@ package com.technortal.online_shop.controller;
 
 import com.technortal.online_shop.dto.LoginDto;
 import com.technortal.online_shop.service.LoginService;
+import com.technortal.online_shop.dto.SessionUserDto;
+import com.technortal.online_shop.security.PortalSession;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class LoginController {
 
-    static final String LOGGED_IN_USER = "loggedInUser";
+    static final String LOGGED_IN_USER = PortalSession.USERNAME;
     private final LoginService loginService;
 
     public LoginController(LoginService loginService) {
@@ -23,8 +25,9 @@ public class LoginController {
     @GetMapping({"/", "/login"})
     public String showLogin(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute(LOGGED_IN_USER) != null) {
-            return "redirect:/products";
+        if (session != null && session.getAttribute(PortalSession.USER_ID) != null) {
+            return Boolean.TRUE.equals(session.getAttribute("mustChangePassword"))
+                    ? "redirect:/account/password" : "redirect:/products";
         }
         return "login";
     }
@@ -33,12 +36,14 @@ public class LoginController {
     public String login(@ModelAttribute("login") LoginDto login,
                         HttpServletRequest request,
                         Model model) {
-        if (loginService.authenticate(login)) {
-            HttpSession session = request.getSession();
-            request.changeSessionId();
-            session.setAttribute(LOGGED_IN_USER, login.getUsername());
-            return "redirect:/products";
+        SessionUserDto user = loginService.authenticate(login).orElse(null);
+        if (user != null) {
+            PortalSession.signIn(request, user);
+            return user.user().isVerified() ? "redirect:/products" : "redirect:/account/password";
         }
+
+        HttpSession existing = request.getSession(false);
+        if (existing != null && existing.getAttribute(PortalSession.USER_ID) != null) existing.invalidate();
 
         model.addAttribute("error", "Invalid username or password.");
         model.addAttribute("username", login.getUsername());

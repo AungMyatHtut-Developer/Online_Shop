@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>User created | Online Shop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css(v='20260922-4')}">
+    <link rel="stylesheet" th:href="@{/css/portal.css(v='20260923-2')}">
+</head>
+<body class="portal-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <aside th:replace="~{fragments/portal :: sidebar('users')}"></aside>
+    <div class="portal-workspace">
+        <header th:replace="~{fragments/portal :: topbar('Users')}"></header>
+        <main id="main-content" class="portal-content product-editor" tabindex="-1">
+            <div class="page-heading"><div><span class="eyebrow">ACCOUNT MANAGEMENT</span><h1>User created</h1><p>Share these sign-in details with the new user.</p></div></div>
+            <div class="success-message" role="status">The user account was created successfully.</div>
+            <section class="product-form" aria-label="New account sign-in details">
+                <div class="form-field"><label for="created-username">Username</label><input id="created-username" type="text" th:value="${createdUser.user.username}" readonly></div>
+                <div class="form-field"><label for="temporary-password">Temporary password</label><input id="temporary-password" class="temporary-password" type="text" th:value="${createdUser.temporaryPassword}" readonly autocomplete="off" spellcheck="false" aria-describedby="temporary-help"></div>
+                <p id="temporary-help" class="account-info">Save this password before leaving this page. It is shown only now and cannot be retrieved later. The user must replace it at their first sign-in.</p>
+                <div class="form-actions"><a class="button button-primary" th:href="@{/users}">Back to users</a></div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

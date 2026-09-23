@@ -27,4 +27,23 @@ Dto and Dao must be use to separate respective code designs. The controller code
 filtering the request and responding the right answers to the destination.
 
 
+Day 3
+
+#Enhance the UI design.
+I want to modify the Product page. The Product listing page must be replace with business Portal UI design.
+Menus will exist left side, right sie must show menu related page. In the menu add Products, Users and Logout button.
+Currently there is no user feature and I will add soon.
+
+#User Feature
+I want to add user accounts. I will need user table.
+User table must contain following columns
+(id, username, email, password(hash), salt, isLock, isVerify, created_date, updated_date)
+password must use SHA256 Algorithm with salt pattern.
+Create admin account with password(1234) and store admin data in database directly.
+And add user CRUD functions for Admin page. When admin create a new user auto generated password must be create and this password must be
+update by user when he/she enter the portal. Password validation minimum 6 characters, numbers, alphabet small and upper cases.
+Admin able to lock user accounts.
+
+
+
 

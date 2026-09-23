@@ -5,81 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${productId == null ? 'New product | Online Shop' : 'Edit product | Online Shop'}">Product | Online Shop</title>
     <link rel="stylesheet" th:href="@{/css/style.css(v='20260922-4')}">
+    <link rel="stylesheet" th:href="@{/css/portal.css(v='20260923-2')}">
 </head>
-<body>
-    <header class="site-header">
-        <a class="brand" th:href="@{/products}">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
-                <path d="M5 7h14l1 14H4L5 7Z"/>
-                <path d="M8 8V6a4 4 0 0 1 8 0v2"/>
-            </svg>
-            Online Shop
-        </a>
-        <form th:action="@{/logout}" method="post">
-            <button class="button button-outline" type="submit">Sign out</button>
-        </form>
-    </header>
-    <main class="products-page product-editor">
-        <a class="button button-outline back-link" th:href="@{/products}">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                <path d="m12 5-7 7 7 7M5 12h14"/>
-            </svg>
-            Back to products
-        </a>
-        <div class="page-heading">
-            <div>
-                <span class="eyebrow">YOUR SHOP</span>
-                <h1 th:text="${productId == null ? 'New product' : 'Edit product'}">New product</h1>
-                <p th:text="${productId == null ? 'Add the details for your next product.' : 'Keep your product details up to date.'}">Product details</p>
+<body class="portal-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <aside th:replace="~{fragments/portal :: sidebar('products')}"></aside>
+    <div class="portal-workspace">
+        <header th:replace="~{fragments/portal :: topbar('Products')}"></header>
+        <main id="main-content" class="portal-content product-editor" tabindex="-1">
+            <a class="button button-outline back-link" th:href="@{/products}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <path d="m12 5-7 7 7 7M5 12h14"/>
+                </svg>
+                Back to products
+            </a>
+            <div class="page-heading">
+                <div>
+                    <span class="eyebrow">PRODUCT MANAGEMENT</span>
+                    <h1 th:text="${productId == null ? 'New product' : 'Edit product'}">New product</h1>
+                    <p th:text="${productId == null ? 'Add the details for your next product.' : 'Keep your product details up to date.'}">Product details</p>
+                </div>
             </div>
-        </div>
-        <form class="product-form" th:object="${product}" method="post" enctype="multipart/form-data"
-              th:action="${productId == null} ? @{/products} : @{/products/{id}/edit(id=${productId})}">
-            <input type="hidden" name="productToken" th:value="${productToken}">
-            <div class="error-message" th:if="${#fields.hasAnyErrors()}" role="alert">
-                <p>Please check the product details and try again.</p>
-                <p th:each="error : ${#fields.globalErrors()}" th:text="${error}"></p>
-            </div>
-            <div class="form-field">
-                <label for="productName">Product name</label>
-                <input id="productName" type="text" th:field="*{productName}" placeholder="Enter product name"
-                       maxlength="255" required th:errorclass="input-error"
-                       th:attr="aria-invalid=${#fields.hasErrors('productName')}" aria-describedby="productName-error">
-                <span id="productName-error" class="field-error" th:errors="*{productName}"></span>
-            </div>
-            <div class="form-row">
-                <div class="form-field">
-                    <label for="price">Price</label>
-                    <input id="price" type="number" th:field="*{price}" placeholder="0.00" min="0" max="9999999999.99"
-                           step="0.01" required th:errorclass="input-error"
-                           th:attr="aria-invalid=${#fields.hasErrors('price')}" aria-describedby="price-error">
-                    <span id="price-error" class="field-error" th:errors="*{price}"></span>
+            <form class="product-form" th:object="${product}" method="post" enctype="multipart/form-data"
+                  th:action="${productId == null} ? @{/products} : @{/products/{id}/edit(id=${productId})}">
+                <input type="hidden" name="productToken" th:value="${productToken}">
+                <div class="error-message" th:if="${#fields.hasAnyErrors()}" role="alert">
+                    <p>Please check the product details and try again.</p>
+                    <p th:each="error : ${#fields.globalErrors()}" th:text="${error}"></p>
                 </div>
                 <div class="form-field">
-                    <label for="quantity">Quantity</label>
-                    <input id="quantity" type="number" th:field="*{quantity}" min="0" max="2147483647" step="1" required
-                           th:errorclass="input-error" th:attr="aria-invalid=${#fields.hasErrors('quantity')}"
-                           aria-describedby="quantity-error">
-                    <span id="quantity-error" class="field-error" th:errors="*{quantity}"></span>
+                    <label for="productName">Product name</label>
+                    <input id="productName" type="text" th:field="*{productName}" placeholder="Enter product name"
+                           maxlength="255" required th:errorclass="input-error"
+                           th:attr="aria-invalid=${#fields.hasErrors('productName')}" aria-describedby="productName-error">
+                    <span id="productName-error" class="field-error" th:errors="*{productName}"></span>
                 </div>
-            </div>
-            <div class="form-field">
-                <label for="image">Product image <span class="optional-label">(optional)</span></label>
-                <div class="image-upload">
-                    <div class="current-image" th:if="${hasImage}">
-                        <img th:src="@{/products/{id}/image(id=${productId})}" alt="Current product image">
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="price">Price</label>
+                        <input id="price" type="number" th:field="*{price}" placeholder="0.00" min="0" max="9999999999.99"
+                               step="0.01" required th:errorclass="input-error"
+                               th:attr="aria-invalid=${#fields.hasErrors('price')}" aria-describedby="price-error">
+                        <span id="price-error" class="field-error" th:errors="*{price}"></span>
                     </div>
-                    <div class="image-upload-controls">
-                        <input id="image" name="image" type="file" accept="image/png,image/jpeg,image/gif" aria-describedby="image-help">
-                        <span class="field-help" id="image-help">PNG, JPEG or GIF, up to 2 MB.<span th:if="${hasImage}"> Leave blank to keep the current image. A new image replaces it.</span></span>
+                    <div class="form-field">
+                        <label for="quantity">Quantity</label>
+                        <input id="quantity" type="number" th:field="*{quantity}" min="0" max="2147483647" step="1" required
+                               th:errorclass="input-error" th:attr="aria-invalid=${#fields.hasErrors('quantity')}"
+                               aria-describedby="quantity-error">
+                        <span id="quantity-error" class="field-error" th:errors="*{quantity}"></span>
                     </div>
                 </div>
-            </div>
-            <div class="form-actions">
-                <a class="button button-outline" th:href="@{/products}">Cancel</a>
-                <button class="button button-primary" type="submit" th:text="${productId == null ? 'Create product' : 'Save changes'}">Create product</button>
-            </div>
-        </form>
-    </main>
+                <div class="form-field">
+                    <label for="image">Product image <span class="optional-label">(optional)</span></label>
+                    <div class="image-upload">
+                        <div class="current-image" th:if="${hasImage}">
+                            <img th:src="@{/products/{id}/image(id=${productId})}" alt="Current product image">
+                        </div>
+                        <div class="image-upload-controls">
+                            <input id="image" name="image" type="file" accept="image/png,image/jpeg,image/gif" aria-describedby="image-help">
+                            <span class="field-help" id="image-help">PNG, JPEG or GIF, up to 2 MB.<span th:if="${hasImage}"> Leave blank to keep the current image. A new image replaces it.</span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <a class="button button-outline" th:href="@{/products}">Cancel</a>
+                    <button class="button button-primary" type="submit" th:text="${productId == null ? 'Create product' : 'Save changes'}">Create product</button>
+                </div>
+            </form>
+        </main>
+    </div>
 </body>
 </html>

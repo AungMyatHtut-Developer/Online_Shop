@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <aside class="portal-sidebar" th:fragment="sidebar(activeMenu)" aria-label="Business portal sidebar">
+        <a class="portal-brand" th:href="@{/products}" aria-label="Online Shop business portal">
+            <span class="portal-brand-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                    <path d="M5 7h14l1 14H4L5 7Z"/>
+                    <path d="M8 8V6a4 4 0 0 1 8 0v2"/>
+                </svg>
+            </span>
+            <span class="sidebar-label">Online Shop<small>Business portal</small></span>
+        </a>
+
+        <nav class="portal-navigation" aria-label="Main navigation" th:unless="${session.mustChangePassword}">
+            <p class="navigation-label sidebar-label">WORKSPACE</p>
+            <a class="portal-menu-item" th:href="@{/products}" title="Products"
+               th:classappend="${activeMenu == 'products'} ? 'is-active'"
+               th:attr="aria-current=${activeMenu == 'products' ? 'page' : null}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                    <path d="m12 3 9 5v9l-9 5-9-5V8l9-5Z"/>
+                    <path d="m3 8 9 5 9-5M12 13v9M7.5 5.5l9 5V15"/>
+                </svg>
+                <span class="sidebar-label">Products</span>
+            </a>
+            <a class="portal-menu-item" th:href="@{/users}" title="Users" th:if="${session.isAdmin}"
+               th:classappend="${activeMenu == 'users'} ? 'is-active'"
+               th:attr="aria-current=${activeMenu == 'users' ? 'page' : null}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                    <circle cx="9" cy="8" r="3"/>
+                    <path d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6M17 14a5 5 0 0 1 4 5v2"/>
+                </svg>
+                <span class="sidebar-label">Users</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="portal-account">
+                <span class="account-avatar" aria-hidden="true"
+                      th:text="${#strings.toUpperCase(#strings.substring(session.loggedInUser, 0, 1))}">A</span>
+                <span class="account-details sidebar-label">
+                    <strong th:text="${session.loggedInUser}">admin</strong>
+                    <small th:text="${session.isAdmin} ? 'Administrator' : 'User'">User</small>
+                </span>
+            </div>
+            <a class="portal-menu-item" th:href="@{/account/password}" title="Change password" th:unless="${session.mustChangePassword}"
+               th:classappend="${activeMenu == 'account'} ? 'is-active'">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                    <rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V6a4 4 0 0 1 8 0v4M12 14v3"/>
+                </svg>
+                <span class="sidebar-label">Change password</span>
+            </a>
+            <form th:action="@{/logout}" method="post">
+                <input type="hidden" name="portalToken" th:value="${session.portalToken}">
+                <button class="portal-menu-item logout-button" type="submit" title="Logout">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                        <path d="M9 4H4v16h5M9 12h12m-4-4 4 4-4 4"/>
+                    </svg>
+                    <span class="sidebar-label">Logout</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <header class="portal-topbar" th:fragment="topbar(section)">
+        <div class="portal-breadcrumb"><span>Workspace</span><span aria-hidden="true">/</span><strong th:text="${section}">Products</strong></div>
+        <span class="portal-access"><span aria-hidden="true"></span>Business portal</span>
+    </header>
+</body>
+</html>
