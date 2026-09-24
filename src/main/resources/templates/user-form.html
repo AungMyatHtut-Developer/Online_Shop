@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${userId == null ? 'New user | Online Shop' : 'Edit user | Online Shop'}">User | Online Shop</title>
     <link rel="stylesheet" th:href="@{/css/style.css(v='20260922-4')}">
-    <link rel="stylesheet" th:href="@{/css/portal.css(v='20260923-2')}">
+    <link rel="stylesheet" th:href="@{/css/portal.css(v='20260924-1')}">
 </head>
 <body class="portal-page">
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -39,6 +39,18 @@
                            th:errorclass="input-error" th:attr="aria-invalid=${#fields.hasErrors('email')}" aria-describedby="email-error">
                     <span id="email-error" class="field-error" th:errors="*{email}"></span>
                 </div>
+                <fieldset class="role-picker" aria-describedby="roles-help roles-error">
+                    <legend>Roles <span class="required-label">Required</span></legend>
+                    <p id="roles-help" class="field-help">Select at least one role. Access from all assigned roles is combined.</p>
+                    <div class="role-options">
+                        <label class="role-option" th:each="available : ${availableRoles}">
+                            <input type="checkbox" th:field="*{roleIds}" th:value="${available.id}" th:attr="aria-invalid=${#fields.hasErrors('roleIds')}">
+                            <span><strong th:text="${available.name}">Role</strong><small th:text="${available.description}">Description</small></span>
+                        </label>
+                    </div>
+                    <span id="roles-error" class="field-error" th:errors="*{roleIds}"></span>
+                    <p class="field-help" th:if="${adminAccount}">The admin account must keep the Administrator role.</p>
+                </fieldset>
                 <div class="account-info" th:if="${userId == null}">A random temporary password will be shown after creation. Share it with the user so they can sign in and choose their own password.</div>
                 <div class="form-actions">
                     <a class="button button-outline" th:href="@{/users}">Cancel</a>

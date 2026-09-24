@@ -23,6 +23,12 @@ public class AccountController {
     @GetMapping("/account/password")
     public String password() { return "change-password"; }
 
+    @GetMapping("/workspace")
+    public String workspace(HttpServletRequest request) {
+        String home = (String) request.getSession(false).getAttribute("homePath");
+        return "/workspace".equals(home) ? "no-menu-access" : "redirect:" + home;
+    }
+
     @PostMapping("/account/password")
     public String changePassword(@RequestParam(required = false) String currentPassword,
                                  @RequestParam(required = false) String newPassword,
@@ -36,7 +42,7 @@ public class AccountController {
             SessionUserDto user = users.changePassword(PortalSession.userId(request), form);
             PortalSession.signIn(request, user);
             redirect.addFlashAttribute("success", "Password changed successfully.");
-            return "redirect:/products";
+            return "redirect:" + user.user().getHomePath();
         } catch (UserValidationException ex) {
             // Passwords never enter the view model, flash attributes or URL.
             model.addAttribute("errors", ex.getErrors().stream().map(ValidationErrorDto::message).toList());

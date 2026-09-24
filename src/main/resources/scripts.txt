@@ -45,5 +45,18 @@ update by user when he/she enter the portal. Password validation minimum 6 chara
 Admin able to lock user accounts.
 
 
+Day 4
+#Implement Role Feature
+I want to add role feature in Admin Panel. Every user must have at least one role or multiple roles.
+So we have to create role management menu. And we also need another menu called(menu permission) permissions on menus
+based on user roles. Follow up on current project design and UI theme.
+
+#Fix auto executing SQL issue
+Hibernate:
+      alter table role_menu_permissions
+         modify column menu_code enum ('MENU_PERMISSIONS','PRODUCTS','ROLES','USERS') not null . Why this logs is showing when I'm restarting applications again and again? And check again why "Many To Many" annoation is only
+  exist in one entity(UserAccount). Do you know JPA pitfalls related with joining tables with code?
+
+
 
 

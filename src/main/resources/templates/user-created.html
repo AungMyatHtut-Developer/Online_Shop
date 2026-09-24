@@ -6,7 +6,7 @@
     <meta name="referrer" content="no-referrer">
     <title>User created | Online Shop</title>
     <link rel="stylesheet" th:href="@{/css/style.css(v='20260922-4')}">
-    <link rel="stylesheet" th:href="@{/css/portal.css(v='20260923-2')}">
+    <link rel="stylesheet" th:href="@{/css/portal.css(v='20260924-1')}">
 </head>
 <body class="portal-page">
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -18,6 +18,7 @@
             <div class="success-message" role="status">The user account was created successfully.</div>
             <section class="product-form" aria-label="New account sign-in details">
                 <div class="form-field"><label for="created-username">Username</label><input id="created-username" type="text" th:value="${createdUser.user.username}" readonly></div>
+                <div class="form-field"><label for="created-roles">Assigned roles</label><input id="created-roles" type="text" th:value="${createdUser.user.roleNames}" readonly></div>
                 <div class="form-field"><label for="temporary-password">Temporary password</label><input id="temporary-password" class="temporary-password" type="text" th:value="${createdUser.temporaryPassword}" readonly autocomplete="off" spellcheck="false" aria-describedby="temporary-help"></div>
                 <p id="temporary-help" class="account-info">Save this password before leaving this page. It is shown only now and cannot be retrieved later. The user must replace it at their first sign-in.</p>
                 <div class="form-actions"><a class="button button-primary" th:href="@{/users}">Back to users</a></div>

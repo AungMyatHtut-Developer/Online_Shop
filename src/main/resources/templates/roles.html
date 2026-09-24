@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role management | Online Shop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css(v='20260922-4')}">
+    <link rel="stylesheet" th:href="@{/css/portal.css(v='20260924-1')}">
+</head>
+<body class="portal-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <aside th:replace="~{fragments/portal :: sidebar('roles')}"></aside>
+    <div class="portal-workspace">
+        <header th:replace="~{fragments/portal :: topbar('Role management')}"></header>
+        <main id="main-content" class="portal-content" tabindex="-1">
+            <div class="page-heading">
+                <div><span class="eyebrow">ACCESS MANAGEMENT</span><h1>Role management</h1><p>Organize your team with roles that match their responsibilities.</p></div>
+                <a class="button button-primary" th:href="@{/roles/new}"><span aria-hidden="true">+</span> New role</a>
+            </div>
+            <div class="success-message" th:if="${success}" th:text="${success}" role="status"></div>
+            <div class="error-message account-alert" th:if="${error}" th:text="${error}" role="alert"></div>
+            <section class="product-list" aria-labelledby="roles-heading">
+                <div class="list-heading"><div><h2 id="roles-heading">All roles</h2><p>Assign roles in Users and manage their access in Menu permission.</p></div><span class="product-count" th:text="${#lists.size(roles)} + ' total'">0 total</span></div>
+                <div class="table-scroll" tabindex="0" role="region" aria-label="Roles table">
+                    <table class="products-table roles-table">
+                        <thead><tr><th scope="col">Role</th><th scope="col">Description</th><th scope="col">Users</th><th scope="col">Menu access</th><th scope="col" class="actions-heading">Actions</th></tr></thead>
+                        <tbody><tr th:each="role : ${roles}">
+                            <td><strong th:text="${role.name}">Role</strong><small class="cell-detail" th:if="${role.system}">Built-in role</small></td>
+                            <td class="role-description" th:text="${role.description.isEmpty() ? 'No description' : role.description}">Description</td>
+                            <td><span class="quantity-badge" th:text="${role.userCount}">0</span></td>
+                            <td><span class="account-badge" th:classappend="${role.menus.isEmpty()} ? 'badge-pending' : 'badge-role'" th:text="${role.menus.isEmpty() ? 'No menus' : #sets.size(role.menus) + ' menus'}">No menus</span></td>
+                            <td><div class="row-actions">
+                                <a class="button button-outline button-small" th:href="@{/roles/{id}/edit(id=${role.id})}" th:aria-label="'Edit ' + ${role.name}">Edit</a>
+                                <a class="button button-outline button-small" th:if="${session.allowedMenus.contains('MENU_PERMISSIONS')}" th:href="@{/menu-permissions(roleId=${role.id})}" th:aria-label="'Permissions for ' + ${role.name}">Permissions</a>
+                                <a class="button button-danger button-small" th:if="${role.deletable}" th:href="@{/roles/{id}/delete(id=${role.id})}" th:aria-label="'Delete ' + ${role.name}">Delete</a>
+                                <span class="cell-detail" th:unless="${role.deletable}" th:text="${role.system ? 'Protected' : 'In use'}">Protected</span>
+                            </div></td>
+                        </tr></tbody>
+                    </table>
+                </div>
+            </section>
+            <p class="account-note">Built-in roles are protected. Before deleting a custom role, reassign every user who has that role.</p>
+        </main>
+    </div>
+</body>
+</html>

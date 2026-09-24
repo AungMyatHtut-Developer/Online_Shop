@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users | Online Shop Business Portal</title>
     <link rel="stylesheet" th:href="@{/css/style.css(v='20260922-4')}">
-    <link rel="stylesheet" th:href="@{/css/portal.css(v='20260923-2')}">
+    <link rel="stylesheet" th:href="@{/css/portal.css(v='20260924-1')}">
     <script th:src="@{/js/users.js(v='20260923-1')}" defer></script>
 </head>
 <body class="portal-page">
@@ -31,24 +31,25 @@
                 </div>
                 <div class="table-scroll" tabindex="0" role="region" aria-label="Users table">
                     <table class="products-table users-table">
-                        <thead><tr><th scope="col">Username</th><th scope="col">Email</th><th scope="col">Access</th><th scope="col">Password</th><th scope="col">Last updated</th><th scope="col" class="actions-heading">Actions</th></tr></thead>
+                        <thead><tr><th scope="col">Username</th><th scope="col">Email</th><th scope="col">Roles</th><th scope="col">Access</th><th scope="col">Password</th><th scope="col">Last updated</th><th scope="col" class="actions-heading">Actions</th></tr></thead>
                         <tbody>
                             <tr th:each="user : ${users}">
-                                <td><strong th:text="${user.username}">username</strong><small class="cell-detail" th:text="${user.admin} ? 'Administrator' : 'User'">User</small></td>
+                                <td><strong th:text="${user.username}">username</strong><small class="cell-detail" th:if="${user.protectedAccount}">Protected account</small></td>
                                 <td class="email-cell" th:text="${user.email}">email</td>
+                                <td><div class="role-badges"><span class="account-badge badge-role" th:each="role : ${user.roles}" th:text="${role.name}">Role</span></div></td>
                                 <td><span class="account-badge" th:classappend="${user.locked} ? 'badge-locked' : 'badge-active'" th:text="${user.locked} ? 'Locked' : 'Active'">Active</span></td>
                                 <td><span class="account-badge" th:classappend="${user.verified} ? 'badge-active' : 'badge-pending'" th:text="${user.verified} ? 'Password set' : 'Change required'">Change required</span></td>
                                 <td class="date-cell" th:text="${#temporals.format(user.updatedDate, 'dd MMM yyyy, HH:mm')}">-</td>
                                 <td>
                                     <div class="row-actions">
                                         <a class="button button-outline button-small" th:href="@{/users/{id}/edit(id=${user.id})}" th:aria-label="'Edit ' + ${user.username}">Edit</a>
-                                        <form th:unless="${user.admin}" th:action="@{/users/{id}/lock(id=${user.id})}" method="post">
+                                        <form th:unless="${user.protectedAccount}" th:action="@{/users/{id}/lock(id=${user.id})}" method="post">
                                             <input type="hidden" name="portalToken" th:value="${session.portalToken}">
                                             <input type="hidden" name="locked" th:value="${!user.locked}">
                                             <button class="button button-outline button-small" type="submit" th:text="${user.locked} ? 'Unlock' : 'Lock'"
                                                     th:aria-label="${user.locked ? 'Unlock ' : 'Lock '} + ${user.username}">Lock</button>
                                         </form>
-                                        <a th:unless="${user.admin}" class="button button-danger button-small" th:href="@{/users/{id}/delete(id=${user.id})}"
+                                        <a th:unless="${user.protectedAccount}" class="button button-danger button-small" th:href="@{/users/{id}/delete(id=${user.id})}"
                                            data-delete-user th:attr="data-username=${user.username}" th:aria-label="'Delete ' + ${user.username}"
                                            aria-haspopup="dialog" aria-controls="delete-user-dialog">Delete</a>
                                     </div>

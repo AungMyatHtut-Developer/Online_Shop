@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete role | Online Shop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css(v='20260922-4')}">
+    <link rel="stylesheet" th:href="@{/css/portal.css(v='20260924-1')}">
+</head>
+<body class="portal-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <aside th:replace="~{fragments/portal :: sidebar('roles')}"></aside>
+    <div class="portal-workspace">
+        <header th:replace="~{fragments/portal :: topbar('Role management')}"></header>
+        <main id="main-content" class="portal-content product-editor" tabindex="-1">
+            <div class="page-heading"><h1>Delete role?</h1></div>
+            <form class="product-form" th:action="@{/roles/{id}/delete(id=${role.id})}" method="post">
+                <input type="hidden" name="portalToken" th:value="${session.portalToken}">
+                <p><strong th:text="${role.name}">Role</strong> and its menu permissions will be permanently deleted. This cannot be undone.</p>
+                <div class="account-info" th:unless="${role.deletable}" th:text="${role.system ? 'Built-in roles cannot be deleted.' : 'This role is assigned to users. Reassign those users before deleting it.'}"></div>
+                <div class="form-actions"><a class="button button-outline" th:href="@{/roles}">Cancel</a><button class="button button-danger-solid" type="submit" th:disabled="${!role.deletable}">Delete role</button></div>
+            </form>
+        </main>
+    </div>
+</body>
+</html>

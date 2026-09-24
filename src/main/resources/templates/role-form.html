@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${roleId == null ? 'New role | Online Shop' : 'Edit role | Online Shop'}">Role | Online Shop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css(v='20260922-4')}">
+    <link rel="stylesheet" th:href="@{/css/portal.css(v='20260924-1')}">
+</head>
+<body class="portal-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <aside th:replace="~{fragments/portal :: sidebar('roles')}"></aside>
+    <div class="portal-workspace">
+        <header th:replace="~{fragments/portal :: topbar('Role management')}"></header>
+        <main id="main-content" class="portal-content product-editor" tabindex="-1">
+            <a class="button button-outline back-link" th:href="@{/roles}">&larr; Back to roles</a>
+            <div class="page-heading"><div><span class="eyebrow">ACCESS MANAGEMENT</span><h1 th:text="${roleId == null ? 'New role' : 'Edit role'}">New role</h1><p>Give this role a clear name and describe who it is for.</p></div></div>
+            <form class="product-form" th:object="${role}" method="post" th:action="${roleId == null} ? @{/roles} : @{/roles/{id}/edit(id=${roleId})}">
+                <input type="hidden" name="portalToken" th:value="${session.portalToken}">
+                <div class="error-message" th:if="${#fields.hasAnyErrors()}" role="alert"><p>Please check the role details and try again.</p><p th:each="error : ${#fields.globalErrors()}" th:text="${error}"></p></div>
+                <div class="form-field">
+                    <label for="name">Role name</label>
+                    <input id="name" type="text" th:field="*{name}" maxlength="50" required th:readonly="${systemRole}" th:errorclass="input-error" aria-describedby="name-error" th:attr="aria-invalid=${#fields.hasErrors('name')}">
+                    <span id="name-error" class="field-error" th:errors="*{name}"></span>
+                </div>
+                <div class="form-field">
+                    <label for="description">Description <span class="optional-label">Optional</span></label>
+                    <textarea id="description" th:field="*{description}" maxlength="255" rows="3" aria-describedby="description-help description-error" th:errorclass="input-error" th:attr="aria-invalid=${#fields.hasErrors('description')}"></textarea>
+                    <span id="description-help" class="field-help">A short description of this role's responsibilities. Up to 255 characters.</span>
+                    <span id="description-error" class="field-error" th:errors="*{description}"></span>
+                </div>
+                <div class="account-info" th:if="${roleId == null}">New roles start with no menu access. After creating the role, configure its permissions in Menu permission, then assign it to users.</div>
+                <div class="account-info" th:if="${systemRole}">This is a built-in role. Its name is protected; you can update the description.</div>
+                <div class="form-actions"><a class="button button-outline" th:href="@{/roles}">Cancel</a><button class="button button-primary" type="submit" th:text="${roleId == null ? 'Create role' : 'Save changes'}">Create role</button></div>
+            </form>
+        </main>
+    </div>
+</body>
+</html>

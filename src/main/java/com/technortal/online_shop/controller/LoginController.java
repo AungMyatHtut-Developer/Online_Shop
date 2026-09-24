@@ -27,7 +27,7 @@ public class LoginController {
         HttpSession session = request.getSession(false);
         if (session != null && session.getAttribute(PortalSession.USER_ID) != null) {
             return Boolean.TRUE.equals(session.getAttribute("mustChangePassword"))
-                    ? "redirect:/account/password" : "redirect:/products";
+                    ? "redirect:/account/password" : "redirect:" + session.getAttribute("homePath");
         }
         return "login";
     }
@@ -39,7 +39,7 @@ public class LoginController {
         SessionUserDto user = loginService.authenticate(login).orElse(null);
         if (user != null) {
             PortalSession.signIn(request, user);
-            return user.user().isVerified() ? "redirect:/products" : "redirect:/account/password";
+            return user.user().isVerified() ? "redirect:" + user.user().getHomePath() : "redirect:/account/password";
         }
 
         HttpSession existing = request.getSession(false);

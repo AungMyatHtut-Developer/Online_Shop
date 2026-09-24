@@ -7,6 +7,7 @@ import com.technortal.online_shop.exception.UserNotFoundException;
 import com.technortal.online_shop.exception.UserValidationException;
 import com.technortal.online_shop.security.PortalSession;
 import com.technortal.online_shop.service.UserService;
+import com.technortal.online_shop.service.RoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +22,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/users")
 public class UserController {
     private final UserService users;
+    private final RoleService roles;
 
-    public UserController(UserService users) { this.users = users; }
+    public UserController(UserService users, RoleService roles) { this.users = users; this.roles = roles; }
 
     @InitBinder("user")
-    public void bindUserFields(WebDataBinder binder) { binder.setAllowedFields("username", "email"); }
+    public void bindUserFields(WebDataBinder binder) { binder.setAllowedFields("username", "email", "roleIds"); }
 
     @GetMapping
     public String list(Model model) {
@@ -41,6 +43,7 @@ public class UserController {
 
     @PostMapping
     public String create(@ModelAttribute("user") UserFormDto user, BindingResult errors, Model model) {
+        if (errors.hasErrors()) return form(model, null, false);
         try {
             model.addAttribute("createdUser", users.createUser(user));
             return "user-created";
@@ -58,17 +61,21 @@ public class UserController {
         UserFormDto form = new UserFormDto();
         form.setUsername(user.getUsername());
         form.setEmail(user.getEmail());
+        form.setRoleIds(user.getRoleIds());
         model.addAttribute("user", form);
-        return form(model, id, user.isAdmin());
+        return form(model, id, user.isProtectedAccount());
     }
 
     @PostMapping("/{id}/edit")
     public String update(@PathVariable Long id, @ModelAttribute("user") UserFormDto user, BindingResult errors,
                          HttpServletRequest request, Model model, RedirectAttributes redirect) {
+        if (errors.hasErrors()) return form(model, id, users.getUser(id).isProtectedAccount());
         try {
             users.updateUser(id, user);
             if (id.equals(PortalSession.userId(request))) {
-                PortalSession.refresh(request.getSession(false), users.getSessionUser(id).orElseThrow());
+                var current = users.getSessionUser(id).orElseThrow();
+                PortalSession.refresh(request.getSession(false), current);
+                if (!current.user().getMenuCodes().contains("USERS")) return "redirect:" + current.user().getHomePath();
             }
             redirect.addFlashAttribute("success", "User updated successfully.");
             return "redirect:/users";
@@ -77,7 +84,7 @@ public class UserController {
         } catch (DataIntegrityViolationException ex) {
             errors.reject("duplicate", "The username or email is already in use.");
         }
-        return form(model, id, users.getUser(id).isAdmin());
+        return form(model, id, users.getUser(id).isProtectedAccount());
     }
 
     @PostMapping("/{id}/lock")
@@ -114,6 +121,7 @@ public class UserController {
     private String form(Model model, Long id, boolean admin) {
         model.addAttribute("userId", id);
         model.addAttribute("adminAccount", admin);
+        model.addAttribute("availableRoles", roles.getRoles());
         return "user-form";
     }
 

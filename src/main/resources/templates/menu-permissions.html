@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu permission | Online Shop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css(v='20260922-4')}">
+    <link rel="stylesheet" th:href="@{/css/portal.css(v='20260924-1')}">
+</head>
+<body class="portal-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <aside th:replace="~{fragments/portal :: sidebar('permissions')}"></aside>
+    <div class="portal-workspace">
+        <header th:replace="~{fragments/portal :: topbar('Menu permission')}"></header>
+        <main id="main-content" class="portal-content" tabindex="-1">
+            <div class="page-heading"><div><span class="eyebrow">ACCESS MANAGEMENT</span><h1>Menu permission</h1><p>Choose the menus each role can see and use.</p></div></div>
+            <div class="success-message" th:if="${success}" th:text="${success}" role="status"></div>
+            <form class="permission-selector" th:action="@{/menu-permissions}" method="get">
+                <div class="form-field"><label for="roleId">Select a role</label><select id="roleId" name="roleId"><option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id == selectedRole.id}">Role</option></select></div>
+                <button class="button button-outline" type="submit">Load permissions</button>
+            </form>
+            <form th:object="${permissions}" th:action="@{/menu-permissions/{id}(id=${selectedRole.id})}" method="post">
+                <input type="hidden" name="portalToken" th:value="${session.portalToken}">
+                <div class="error-message account-alert" th:if="${#fields.hasAnyErrors()}" role="alert"><p th:each="error : ${#fields.allErrors()}" th:text="${error}"></p></div>
+                <section class="product-list" aria-labelledby="permissions-heading">
+                    <div class="list-heading"><div><h2 id="permissions-heading" th:text="${selectedRole.name}">Role</h2><p th:text="${selectedRole.description}">Description</p></div><span class="product-count" th:text="${selectedRole.userCount} + ' users'">0 users</span></div>
+                    <div class="table-scroll" tabindex="0" role="region" aria-label="Menu permissions">
+                        <table class="products-table permissions-table">
+                            <thead><tr><th scope="col">Menu</th><th scope="col">What this allows</th><th scope="col" class="permission-toggle">Allow access</th></tr></thead>
+                            <tbody><tr th:each="menu : ${menus}">
+                                <th scope="row"><label th:for="${'menu-' + menu.name()}" th:text="${menu.label}">Menu</label></th>
+                                <td th:text="${menu.description}">Description</td>
+                                <td class="permission-toggle"><input class="permission-checkbox" type="checkbox" th:id="${'menu-' + menu.name()}" name="menus" th:value="${menu.name()}" th:checked="${permissions.menus.contains(menu.name())}" th:disabled="${selectedRole.administrator}" th:aria-label="'Allow ' + ${menu.label}"></td>
+                            </tr></tbody>
+                        </table>
+                    </div>
+                    <div class="permission-footer"><p>Access includes all actions within the selected menu. Users with multiple roles receive their combined permissions.</p><button class="button button-primary" type="submit" th:unless="${selectedRole.administrator}">Save permissions</button><span class="account-badge badge-role" th:if="${selectedRole.administrator}">Full access protected</span></div>
+                </section>
+            </form>
+            <p class="account-note" th:if="${selectedRole.administrator}">Administrator always has access to every menu, so you can continue to manage portal access.</p>
+            <p class="account-note" th:unless="${selectedRole.administrator}">Changes apply on each user's next request. With no menus selected, this role grants no workspace access. Password changes and logout remain available.</p>
+        </main>
+    </div>
+</body>
+</html>

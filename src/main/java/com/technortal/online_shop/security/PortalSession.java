@@ -27,6 +27,9 @@ public final class PortalSession {
         session.setAttribute(USERNAME, user.user().getUsername());
         session.setAttribute(STAMP, user.credentialStamp());
         session.setAttribute("isAdmin", user.user().isAdmin());
+        session.setAttribute("allowedMenus", user.user().getMenuCodes());
+        session.setAttribute("roleNames", user.user().getRoleNames());
+        session.setAttribute("homePath", user.user().getHomePath());
         session.setAttribute("mustChangePassword", !user.user().isVerified());
     }
 

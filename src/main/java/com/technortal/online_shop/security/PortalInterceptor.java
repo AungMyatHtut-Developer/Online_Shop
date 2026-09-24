@@ -42,7 +42,8 @@ public class PortalInterceptor implements HandlerInterceptor {
             response.sendRedirect(request.getContextPath() + "/account/password");
             return false;
         }
-        if ((path.equals("/users") || path.startsWith("/users/")) && !current.user().isAdmin()) {
+        PortalMenu menu = PortalMenu.forPath(path).orElse(null);
+        if (menu != null && !current.user().getMenus().contains(menu)) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return false;
         }

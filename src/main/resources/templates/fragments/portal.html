@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
     <aside class="portal-sidebar" th:fragment="sidebar(activeMenu)" aria-label="Business portal sidebar">
-        <a class="portal-brand" th:href="@{/products}" aria-label="Online Shop business portal">
+        <a class="portal-brand" th:href="@{/workspace}" aria-label="Online Shop business portal">
             <span class="portal-brand-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
                     <path d="M5 7h14l1 14H4L5 7Z"/>
@@ -14,7 +14,7 @@
 
         <nav class="portal-navigation" aria-label="Main navigation" th:unless="${session.mustChangePassword}">
             <p class="navigation-label sidebar-label">WORKSPACE</p>
-            <a class="portal-menu-item" th:href="@{/products}" title="Products"
+            <a class="portal-menu-item" th:href="@{/products}" title="Products" th:if="${session.allowedMenus.contains('PRODUCTS')}"
                th:classappend="${activeMenu == 'products'} ? 'is-active'"
                th:attr="aria-current=${activeMenu == 'products' ? 'page' : null}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
@@ -23,7 +23,7 @@
                 </svg>
                 <span class="sidebar-label">Products</span>
             </a>
-            <a class="portal-menu-item" th:href="@{/users}" title="Users" th:if="${session.isAdmin}"
+            <a class="portal-menu-item" th:href="@{/users}" title="Users" th:if="${session.allowedMenus.contains('USERS')}"
                th:classappend="${activeMenu == 'users'} ? 'is-active'"
                th:attr="aria-current=${activeMenu == 'users' ? 'page' : null}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
@@ -31,6 +31,20 @@
                     <path d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6M17 14a5 5 0 0 1 4 5v2"/>
                 </svg>
                 <span class="sidebar-label">Users</span>
+            </a>
+            <a class="portal-menu-item" th:href="@{/roles}" title="Role management" th:if="${session.allowedMenus.contains('ROLES')}"
+               th:classappend="${activeMenu == 'roles'} ? 'is-active'" th:attr="aria-current=${activeMenu == 'roles' ? 'page' : null}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                    <path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z"/><path d="m8 12 3 3 5-6"/>
+                </svg>
+                <span class="sidebar-label">Role management</span>
+            </a>
+            <a class="portal-menu-item" th:href="@{/menu-permissions}" title="Menu permission" th:if="${session.allowedMenus.contains('MENU_PERMISSIONS')}"
+               th:classappend="${activeMenu == 'permissions'} ? 'is-active'" th:attr="aria-current=${activeMenu == 'permissions' ? 'page' : null}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                    <path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="white"/><circle cx="15" cy="12" r="2" fill="white"/><circle cx="9" cy="18" r="2" fill="white"/>
+                </svg>
+                <span class="sidebar-label">Menu permission</span>
             </a>
         </nav>
 
@@ -40,7 +54,7 @@
                       th:text="${#strings.toUpperCase(#strings.substring(session.loggedInUser, 0, 1))}">A</span>
                 <span class="account-details sidebar-label">
                     <strong th:text="${session.loggedInUser}">admin</strong>
-                    <small th:text="${session.isAdmin} ? 'Administrator' : 'User'">User</small>
+                    <small class="account-roles" th:text="${session.roleNames}" th:title="${session.roleNames}">User</small>
                 </span>
             </div>
             <a class="portal-menu-item" th:href="@{/account/password}" title="Change password" th:unless="${session.mustChangePassword}"
